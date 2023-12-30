@@ -35,6 +35,11 @@ function App() {
         clearInterval(interval);
         setBuilding(false);
         setBuildNumber(Math.floor(Math.random() * 3) + 1); // Set the final number
+
+        // Check for a 1 in 6 chance to win a station
+        if (Math.floor(Math.random() * 6) + 1 === 1) {
+          alert("You can build a station 🚂");
+        }
       }
     }, 100);
   };
