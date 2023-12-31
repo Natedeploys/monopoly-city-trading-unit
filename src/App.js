@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Box, Button, Typography } from "@mui/material";
+import Confetti from "react-confetti";
 
 function App() {
   const [diceNumber, setDiceNumber] = useState(1);
@@ -8,37 +9,40 @@ function App() {
   const [building, setBuilding] = useState(false);
   const [auctionTime, setAuctionTime] = useState(50);
   const [auctionActive, setAuctionActive] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
 
-  // Function to generate a random number between 1 and 6 for dice
   const rollDice = () => {
     setRollingDice(true);
     let rollCount = 0;
     const interval = setInterval(() => {
-      setDiceNumber(Math.floor(Math.random() * 6) + 1);
+      const newNumber = Math.floor(Math.random() * 6) + 1;
+      setDiceNumber(newNumber);
       rollCount++;
       if (rollCount > 10) {
         clearInterval(interval);
         setRollingDice(false);
-        setDiceNumber(Math.floor(Math.random() * 6) + 1); // Set the final number
       }
     }, 100);
   };
 
-  // Function to generate a random number between 1 and 3 for building
+  const triggerConfetti = () => {
+    setShowConfetti(true);
+    setTimeout(() => setShowConfetti(false), 10000); // Confetti stops after 3 seconds
+  };
+
   const buildBlocks = () => {
     setBuilding(true);
     let buildCount = 0;
     const interval = setInterval(() => {
-      setBuildNumber(Math.floor(Math.random() * 3) + 1);
+      const newBuildNumber = Math.floor(Math.random() * 3) + 1;
+      setBuildNumber(newBuildNumber);
       buildCount++;
       if (buildCount > 10) {
         clearInterval(interval);
         setBuilding(false);
-        setBuildNumber(Math.floor(Math.random() * 3) + 1); // Set the final number
-
-        // Check for a 1 in 6 chance to win a station
-        if (Math.floor(Math.random() * 6) + 1 === 1) {
-          alert("You can build a station 🚂");
+        // Trigger confetti if the final build number is 3
+        if (newBuildNumber === 3) {
+          triggerConfetti();
         }
       }
     }, 100);
@@ -62,6 +66,7 @@ function App() {
     if (auctionActive && auctionTime > 0) {
       timer = setTimeout(() => setAuctionTime(auctionTime - 1), 1000);
     } else if (auctionTime === 0) {
+      triggerConfetti();
       setAuctionActive(false);
     }
     return () => clearTimeout(timer);
@@ -72,6 +77,7 @@ function App() {
     return () => {
       setRollingDice(false);
       setBuilding(false);
+      setShowConfetti(false);
     };
   }, []);
 
@@ -86,6 +92,7 @@ function App() {
         height: "100vh",
       }}
     >
+      {showConfetti && <Confetti />}
       <Typography
         variant="h5"
         gutterBottom
@@ -108,7 +115,7 @@ function App() {
         }}
       >
         <Typography variant="h6" gutterBottom>
-          Double Dice roll:
+          Dice roll:
         </Typography>
         <Button
           variant="contained"
