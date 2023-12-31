@@ -12,7 +12,7 @@ import MapsHomeWorkOutlinedIcon from "@mui/icons-material/MapsHomeWorkOutlined";
 import TimerOutlinedIcon from "@mui/icons-material/TimerOutlined";
 
 function App() {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const [diceNumber, setDiceNumber] = useState(1);
   const [buildNumber, setBuildNumber] = useState(1);
   const [rollingDice, setRollingDice] = useState(false);
@@ -106,13 +106,16 @@ function App() {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        justifyContent: "center",
+        justifyContent: "flex-start",
         width: "100vw",
+        boxSizing: "border-box",
         height: "100vh",
         backgroundImage: `url(${backgroundImage})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
+        padding: "20px",
+        overflowX: "hidden",
       }}
     >
       <Confetti run={showConfetti} recycle={false} />
@@ -128,7 +131,7 @@ function App() {
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            width: 400,
+            width: { xs: "100%", md: "400px" },
             bgcolor: "background.paper",
             outline: "none",
             boxShadow: 24,
@@ -171,9 +174,8 @@ function App() {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          width: "400px",
+          width: { xs: "100%", md: "400px" },
           background: "whitesmoke",
-          margin: "10px",
         }}
       >
         <Typography
@@ -220,7 +222,7 @@ function App() {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          width: "400px",
+          width: { xs: "100%", md: "400px" },
           margin: "10px",
           background: "whitesmoke",
         }}
@@ -271,9 +273,8 @@ function App() {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          width: "400px",
+          width: { xs: "100%", md: "400px" },
           background: "whitesmoke",
-          margin: "10px",
         }}
       >
         <Typography
