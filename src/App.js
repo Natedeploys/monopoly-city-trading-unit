@@ -87,65 +87,113 @@ function App() {
       }}
     >
       <Typography
-        variant="h3"
+        variant="h5"
         gutterBottom
         sx={{
           textAlign: "center",
+          fontWeight: "bold",
         }}
       >
         Monopoly City Trading Unit
       </Typography>
-      <Typography variant="h6" gutterBottom>
-        Normal Dice:
-      </Typography>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={rollDice}
-        disabled={rollingDice}
-        sx={{ marginBottom: "20px" }}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          width: "400px",
+          border: "1px solid grey",
+          margin: "10px",
+        }}
       >
-        {rollingDice ? "Rolling..." : "Roll"}
-      </Button>
-      <Typography variant="h6" gutterBottom>
-        {diceNumber}
-      </Typography>
-      <Typography variant="h6" gutterBottom>
-        Build Blocks:
-      </Typography>
-      <Button
-        variant="contained"
-        color="secondary"
-        onClick={buildBlocks}
-        disabled={building}
-        sx={{ marginBottom: "20px" }}
+        <Typography variant="h6" gutterBottom>
+          Double Dice roll:
+        </Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={rollDice}
+          disabled={rollingDice}
+          sx={{ marginBottom: "20px" }}
+        >
+          {rollingDice ? "Rolling..." : "Roll"}
+        </Button>
+        <Typography variant="h6" gutterBottom>
+          {diceNumber}
+        </Typography>
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          width: "400px",
+          border: "1px solid grey",
+          margin: "10px",
+        }}
       >
-        {building ? "Building..." : "Build"}
-      </Button>
-      <Typography variant="h6">
-        {building ? "Building..." : `${buildNumber} block(s) to build`}
-      </Typography>
-      <Typography variant="h6" gutterBottom>
-        Auction Timer:
-      </Typography>
-      <Button
-        variant="contained"
-        color="success"
-        onClick={startAuction}
-        disabled={auctionActive}
-        sx={{ marginBottom: "20px" }}
+        <Typography variant="h6" gutterBottom>
+          Build Blocks:
+        </Typography>
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={buildBlocks}
+          disabled={building}
+          sx={{ marginBottom: "20px" }}
+        >
+          {building ? "Building..." : "Build"}
+        </Button>
+        <Typography variant="h6">
+          {building
+            ? `${buildNumber} block(s)`
+            : `${buildNumber} block(s) to build`}
+        </Typography>
+        <Typography
+          variant="caption"
+          gutterBottom
+          sx={{
+            textAlign: "center",
+          }}
+        >
+          You may win the opportunity to build a train station
+        </Typography>
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          width: "400px",
+          border: "1px solid grey",
+          margin: "10px",
+        }}
       >
-        Auction
-      </Button>
-      <Button
-        variant="outlined"
-        color="error"
-        onClick={resetAuction}
-        disabled={!auctionActive}
-      >
-        Reset
-      </Button>
-      <Typography variant="h6">{auctionTime} second(s)</Typography>
+        <Typography variant="h6" gutterBottom>
+          Auction Timer:
+        </Typography>
+        <Button
+          variant="contained"
+          color="success"
+          onClick={startAuction}
+          disabled={auctionActive}
+          sx={{ marginBottom: "20px" }}
+        >
+          Auction
+        </Button>
+        <Button
+          variant="outlined"
+          color="error"
+          onClick={resetAuction}
+          disabled={!auctionActive}
+        >
+          Reset
+        </Button>
+        <Typography variant="h6">{auctionTime} second(s)</Typography>
+      </Box>
     </Box>
   );
 }
