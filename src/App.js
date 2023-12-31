@@ -1,8 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Typography, Card, Modal } from "@mui/material";
 import Confetti from "react-confetti";
+import useSound from "use-sound";
+import buildSound from "./build.mp3";
+import diceSound from "./dice.mp3";
+import tickSound from "./tictac.mp3"; // Replace with your tick sound file path
+import finalCountdownSound from "./finaltictac.mp3"; // Replace with your final countdown sound file path
+import backgroundImage from "./bg.jpeg";
+import CasinoOutlinedIcon from "@mui/icons-material/CasinoOutlined";
+import MapsHomeWorkOutlinedIcon from "@mui/icons-material/MapsHomeWorkOutlined";
+import TimerOutlinedIcon from "@mui/icons-material/TimerOutlined";
 
 function App() {
+  const [open, setOpen] = useState(false);
   const [diceNumber, setDiceNumber] = useState(1);
   const [buildNumber, setBuildNumber] = useState(1);
   const [rollingDice, setRollingDice] = useState(false);
@@ -11,9 +21,16 @@ function App() {
   const [auctionActive, setAuctionActive] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
 
+  const [playBuild] = useSound(buildSound, { volume: 0.25 });
+  const [playDice] = useSound(diceSound, { volume: 0.25 });
+  const [playTick] = useSound(tickSound, { volume: 0.25 });
+  const [playFinalCountdown] = useSound(finalCountdownSound, { volume: 1 });
+
   const rollDice = () => {
+    playDice();
     setRollingDice(true);
     let rollCount = 0;
+
     const interval = setInterval(() => {
       const newNumber = Math.floor(Math.random() * 6) + 1;
       setDiceNumber(newNumber);
@@ -31,17 +48,20 @@ function App() {
   };
 
   const buildBlocks = () => {
+    playBuild();
     setBuilding(true);
     let buildCount = 0;
     const interval = setInterval(() => {
       const newBuildNumber = Math.floor(Math.random() * 3) + 1;
       setBuildNumber(newBuildNumber);
       buildCount++;
-      if (buildCount > 10) {
+      if (buildCount > 30) {
         clearInterval(interval);
         setBuilding(false);
-        // Trigger confetti if the final build number is 3
-        if (newBuildNumber === 3) {
+
+        // 1 in 6 chances to win station
+        if (Math.floor(Math.random() * 6) + 1 === 1) {
+          setOpen(true);
           triggerConfetti();
         }
       }
@@ -64,22 +84,21 @@ function App() {
   useEffect(() => {
     let timer;
     if (auctionActive && auctionTime > 0) {
+      // sound effect
+      if (auctionTime <= 5) {
+        playFinalCountdown();
+      } else {
+        playTick();
+      }
+
       timer = setTimeout(() => setAuctionTime(auctionTime - 1), 1000);
     } else if (auctionTime === 0) {
       triggerConfetti();
       setAuctionActive(false);
     }
     return () => clearTimeout(timer);
+    // eslint-disable-next-line
   }, [auctionTime, auctionActive]);
-
-  // Cleanup the interval on component unmount
-  useEffect(() => {
-    return () => {
-      setRollingDice(false);
-      setBuilding(false);
-      setShowConfetti(false);
-    };
-  }, []);
 
   return (
     <Box
@@ -90,35 +109,91 @@ function App() {
         justifyContent: "center",
         width: "100vw",
         height: "100vh",
+        backgroundImage: `url(${backgroundImage})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
       }}
     >
-      {showConfetti && <Confetti />}
+      <Confetti run={showConfetti} recycle={false} />
+      <Modal
+        open={open}
+        onClose={() => setOpen(false)}
+        aria-labelledby="train-win"
+        aria-describedby="you-win-a-train-station"
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 400,
+            bgcolor: "background.paper",
+            outline: "none",
+            boxShadow: 24,
+            p: 4,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Typography id="train-win" variant="h6" component="h2">
+            You've won a train station! 🚂
+          </Typography>
+          <Typography id="you-win-a-train-station" sx={{ m: 2 }}>
+            Build a train station according to the rules
+          </Typography>
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => setOpen(false)}
+          >
+            Close
+          </Button>
+        </Box>
+      </Modal>
       <Typography
         variant="h5"
         gutterBottom
         sx={{
           textAlign: "center",
           fontWeight: "bold",
+          fontStyle: "italic",
         }}
       >
         Monopoly City Trading Unit
       </Typography>
-      <Box
+      <Card
         sx={{
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
           width: "400px",
-          border: "1px solid grey",
+          background: "whitesmoke",
           margin: "10px",
         }}
       >
-        <Typography variant="h6" gutterBottom>
-          Dice roll:
+        <Typography
+          variant="h6"
+          gutterBottom
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          Roll
+          <CasinoOutlinedIcon
+            sx={{
+              marginLeft: "10px",
+            }}
+          />
         </Typography>
         <Button
-          variant="contained"
+          variant="outlined"
           color="primary"
           onClick={rollDice}
           disabled={rollingDice}
@@ -129,24 +204,46 @@ function App() {
         <Typography variant="h6" gutterBottom>
           {diceNumber}
         </Typography>
-      </Box>
-      <Box
+        <Typography
+          variant="caption"
+          gutterBottom
+          sx={{
+            textAlign: "center",
+          }}
+        >
+          Simply press roll twice for simulating two dice
+        </Typography>
+      </Card>
+      <Card
         sx={{
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
           width: "400px",
-          border: "1px solid grey",
           margin: "10px",
+          background: "whitesmoke",
         }}
       >
-        <Typography variant="h6" gutterBottom>
-          Build Blocks:
+        <Typography
+          variant="h6"
+          gutterBottom
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          Build blocks
+          <MapsHomeWorkOutlinedIcon
+            sx={{
+              marginLeft: "10px",
+            }}
+          />
         </Typography>
         <Button
-          variant="contained"
-          color="secondary"
+          variant="outlined"
+          color="primary"
           onClick={buildBlocks}
           disabled={building}
           sx={{ marginBottom: "20px" }}
@@ -167,24 +264,37 @@ function App() {
         >
           You may win the opportunity to build a train station
         </Typography>
-      </Box>
-      <Box
+      </Card>
+      <Card
         sx={{
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
           width: "400px",
-          border: "1px solid grey",
+          background: "whitesmoke",
           margin: "10px",
         }}
       >
-        <Typography variant="h6" gutterBottom>
-          Auction Timer:
+        <Typography
+          variant="h6"
+          gutterBottom
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          Auction Timer
+          <TimerOutlinedIcon
+            sx={{
+              marginLeft: "10px",
+            }}
+          />
         </Typography>
         <Button
-          variant="contained"
-          color="success"
+          variant="outlined"
+          color="primary"
           onClick={startAuction}
           disabled={auctionActive}
           sx={{ marginBottom: "20px" }}
@@ -196,11 +306,21 @@ function App() {
           color="error"
           onClick={resetAuction}
           disabled={!auctionActive}
+          sx={{
+            marginBottom: "20px",
+          }}
         >
           Reset
         </Button>
-        <Typography variant="h6">{auctionTime} second(s)</Typography>
-      </Box>
+        <Typography
+          variant="h6"
+          sx={{
+            color: auctionTime <= 5 ? "red" : "black",
+          }}
+        >
+          {auctionTime} second(s)
+        </Typography>
+      </Card>
     </Box>
   );
 }
