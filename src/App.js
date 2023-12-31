@@ -12,7 +12,7 @@ import MapsHomeWorkOutlinedIcon from "@mui/icons-material/MapsHomeWorkOutlined";
 import TimerOutlinedIcon from "@mui/icons-material/TimerOutlined";
 
 function App() {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const [diceNumber, setDiceNumber] = useState(1);
   const [buildNumber, setBuildNumber] = useState(1);
   const [rollingDice, setRollingDice] = useState(false);
